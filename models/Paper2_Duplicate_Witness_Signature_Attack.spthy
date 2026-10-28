@@ -1,0 +1,51 @@
+theory Paper2_Duplicate_Witness_Signature_Attack
+begin
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x,y) @i ==> x = y"
+
+rule Register_Witness:
+  [ Fr(~wid), Fr(~wsk) ]
+  -->
+  [ !WitnessSK(~wid, ~wsk)
+  , !WitnessPK(~wid, pk(~wsk))
+  , Out(<~wid, pk(~wsk)>)
+  ]
+
+rule Sign_Checkpoint_Vote:
+  let cp = <'log-A', 'size-8', 'root-A'>
+      vote = <~wid, cp>
+  in
+  [ !WitnessSK(~wid, ~wsk) ]
+  -->
+  [ Out(<vote, sign(vote, ~wsk)>) ]
+
+/*
+ * Deliberately vulnerable certificate rule.
+ * The SAME signed vote is supplied five times.
+ * Signature verification is required, but signer uniqueness is not.
+ */
+rule Unsafe_Accept_Replayed_Vote:
+  let cp = <'log-A', 'size-8', 'root-A'>
+      vote = <wid, cp>
+  in
+  [ !WitnessPK(wid, pkW)
+  , In(<vote, sig>)
+  , In(<vote, sig>)
+  , In(<vote, sig>)
+  , In(<vote, sig>)
+  , In(<vote, sig>)
+  ]
+  --[ Eq(verify(sig, vote, pkW), true)
+    , DuplicateSignerAccepted(wid, wid, wid, wid, wid, cp)
+    ]->
+  [ ]
+
+lemma duplicate_signed_vote_attack_exists:
+  exists-trace
+  "Ex wid cp #i.
+     DuplicateSignerAccepted(wid,wid,wid,wid,wid,cp) @i"
+
+end
