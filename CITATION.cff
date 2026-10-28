@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "Cite the associated manuscript and repository version used. Update this citation when publication metadata are available."
+title: "Post-Quantum, Byte-Preserving DICOM Exchange with Witness-Backed Provenance Verification"
+version: 0.1.0
+date-released: 2026-10-28
+type: software
+keywords:
+  - DICOM
+  - post-quantum cryptography
+  - provenance
+  - Merkle log
+  - witness quorum
