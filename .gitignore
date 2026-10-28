@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# Local result folders and DICOM payloads
+local_run/
+*.dcm
+*.dicom
+*.dic
+
+# Keys and local secrets
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+private_keys/
