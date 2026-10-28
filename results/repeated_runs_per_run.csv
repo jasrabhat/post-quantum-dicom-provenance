@@ -1,0 +1,11 @@
+run,return_code,all_checks_passed,runtime_ms_including_setup_and_log_checks,median_aes_gcm_encryption_ms,median_receiver_total_validation_ms,aggregate_overhead_percent_excluding_json_framing,total_payload_MiB,objects_successfully_processed,checks_passed,checks_total
+1,0,true,119.753,0.061,1.3392,3.460728,1.4958,11,170,170
+2,0,true,113.409,0.0611,1.3265,3.460728,1.4958,11,170,170
+3,0,true,116.236,0.0615,1.3098,3.460728,1.4958,11,170,170
+4,0,true,117.889,0.0603,1.348,3.460728,1.4958,11,170,170
+5,0,true,118.888,0.063,1.3361,3.460728,1.4958,11,170,170
+6,0,true,114.645,0.0617,1.3241,3.460728,1.4958,11,170,170
+7,0,true,120.453,0.0624,1.3309,3.460728,1.4958,11,170,170
+8,0,true,110.832,0.0597,1.3121,3.460728,1.4958,11,170,170
+9,0,true,119.83,0.0667,1.3553,3.460728,1.4958,11,170,170
+10,0,true,121.374,0.0582,1.3098,3.460728,1.4958,11,170,170
