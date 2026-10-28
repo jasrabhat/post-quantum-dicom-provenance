@@ -1,0 +1,42 @@
+theory Paper2_Duplicate_Witness_Diagnostic
+begin
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x,y) @i ==> x = y"
+
+/* Five distinct witness identities are registered with signing keys. */
+rule Register_Witness:
+  [ Fr(~wid), Fr(~wsk) ]
+  -->
+  [ !WitnessSK(~wid, ~wsk)
+  , !WitnessPK(~wid, pk(~wsk))
+  , Out(<~wid, pk(~wsk)>)
+  ]
+
+/* A witness signs a vote for a particular checkpoint. */
+rule Sign_Vote:
+  let vote = <wid, 'log-A', 'size-8', 'root-A'>
+  in
+  [ !WitnessSK(wid, wsk) ]
+  -->
+  [ Out(<vote, sign(vote, wsk)>) ]
+
+/*
+ * Deliberately unsafe diagnostic rule:
+ * accepts five received vote messages without checking that their
+ * witness identities are distinct or that their signatures are valid.
+ */
+rule Unsafe_Accept:
+  [ In(v1), In(v2), In(v3), In(v4), In(v5) ]
+  --[ UnsafeAccepted(v1,v2,v3,v4,v5) ]->
+  [ ]
+
+/* Attack objective: acceptance can occur with fewer than five identities. */
+lemma unsafe_acceptance_can_use_fewer_than_five_identities:
+  exists-trace
+  "Ex v1 v2 v3 v4 v5 #i.
+     UnsafeAccepted(v1,v2,v3,v4,v5) @i"
+
+end
