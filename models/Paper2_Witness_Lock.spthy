@@ -1,0 +1,101 @@
+/*
+ * Paper 2: symbolic model for one honest witness's persistent checkpoint lock.
+ *
+ * The model intentionally abstracts Merkle proof validation into a trusted
+ * ValidExtension fact. Therefore it proves the witness-state invariant
+ * conditional on a sound extension verifier; it does NOT prove the Python
+ * Merkle verifier correct. A separate finite combinatorial check establishes
+ * the 7-witness / 5-quorum / 2-Byzantine intersection arithmetic.
+ *
+ * Authority equivocation is allowed on purpose: it can issue two distinct
+ * same-size checkpoints that both extend the same earlier prefix. The linear
+ * WState fact ensures a particular honest witness can follow only one branch.
+ */
+
+theory Paper2_Witness_Lock
+begin
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x,y) @i ==> x = y"
+
+rule Register_Authority:
+  [ Fr(~aid), Fr(~ask) ]
+  -->
+  [ !AuthoritySK(~aid, ~ask)
+  , !AuthorityPK(~aid, pk(~ask))
+  , Out(<~aid, pk(~ask)>)
+  ]
+
+/* A fresh witness identity creates exactly one initial linear state. */
+rule Register_Witness:
+  [ Fr(~wid), Fr(~wsk) ]
+  -->
+  [ !WitnessSK(~wid, ~wsk)
+  , !WitnessPK(~wid, pk(~wsk))
+  , WState(~wid, 'log-A', 'size-4', 'root-0')
+  , Out(<~wid, pk(~wsk)>)
+  ]
+
+/*
+ * The authority deliberately issues two conflicting same-size views.
+ * ValidExtension is an abstraction of a successfully checked Merkle
+ * consistency proof from (size-4, root-0) to (size-8, root-X).
+ */
+rule Authority_Issues_Conflicting_Checkpoints:
+  let cpA = <~aid, 'log-A', 'size-8', ~rootA>
+      cpB = <~aid, 'log-A', 'size-8', ~rootB>
+  in
+  [ !AuthoritySK(~aid, ~ask)
+  , Fr(~rootA), Fr(~rootB)
+  ]
+  --[ AuthorityIssued(~aid, 'log-A', 'size-8', ~rootA)
+    , AuthorityIssued(~aid, 'log-A', 'size-8', ~rootB)
+    ]->
+  [ !ValidExtension(pk(~ask), ~aid, 'log-A', 'size-4', 'root-0',
+                    'size-8', ~rootA)
+  , !ValidExtension(pk(~ask), ~aid, 'log-A', 'size-4', 'root-0',
+                    'size-8', ~rootB)
+  , Out(<cpA, sign(cpA, ~ask)>)
+  , Out(<cpB, sign(cpB, ~ask)>)
+  ]
+
+/*
+ * Honest vote: validates authority signature and requires a valid extension
+ * from the witness's current checkpoint. The old WState is consumed, so
+ * after choosing a branch the witness cannot vote from the old prefix again.
+ */
+rule Honest_Witness_Vote:
+  let cp = <aid, log, newSize, newRoot>
+      vote = <wid, cp>
+  in
+  [ WState(wid, log, oldSize, oldRoot)
+  , !WitnessSK(wid, wsk)
+  , !AuthorityPK(aid, apk)
+  , !ValidExtension(apk, aid, log, oldSize, oldRoot, newSize, newRoot)
+  , In(<cp, sig>)
+  ]
+  --[ Eq(verify(sig, cp, apk), true)
+    , WitnessVoted(wid, aid, log, newSize, newRoot)
+    ]->
+  [ WState(wid, log, newSize, newRoot)
+  , Out(<vote, sign(vote, wsk)>)
+  ]
+
+/* Every pair of votes from one honest witness for the same log and size
+ * must carry the same root. */
+lemma honest_witness_never_equivocates_at_same_size:
+  "All wid aid log size root1 root2 #i #j.
+     WitnessVoted(wid,aid,log,size,root1) @i
+     & WitnessVoted(wid,aid,log,size,root2) @j
+     ==> root1 = root2"
+
+/* An honest witness votes only on a checkpoint previously issued by the
+ * authority key whose signature it checked. */
+lemma witness_vote_has_authority_origin:
+  "All wid aid log size root #i.
+     WitnessVoted(wid,aid,log,size,root) @i
+     ==> (Ex #j. AuthorityIssued(aid,log,size,root) @j & #j < #i)"
+
+end
