@@ -1,0 +1,56 @@
+theory Paper2_Duplicate_Witness_Repaired
+begin
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x,y) @i ==> x = y"
+
+restriction DistinctIdentity:
+  "All x y #i. Neq(x,y) @i ==> not (x = y)"
+
+rule Register_Witness:
+  [ Fr(~wid), Fr(~wsk) ]
+  -->
+  [ !WitnessSK(~wid, ~wsk), !WitnessPK(~wid, pk(~wsk)), Out(<~wid, pk(~wsk)>) ]
+
+rule Sign_Checkpoint_Vote:
+  let cp = <'log-A', 'size-8', 'root-A'>
+      vote = <~wid, cp>
+  in [ !WitnessSK(~wid, ~wsk) ]
+  --> [ Out(<vote, sign(vote, ~wsk)>) ]
+
+rule Accept_Certificate:
+  let cp = <'log-A', 'size-8', 'root-A'>
+      v1 = <w1, cp>
+      v2 = <w2, cp>
+      v3 = <w3, cp>
+      v4 = <w4, cp>
+      v5 = <w5, cp>
+  in
+  [ !WitnessPK(w1, pk1), In(<v1, s1>)
+  , !WitnessPK(w2, pk2), In(<v2, s2>)
+  , !WitnessPK(w3, pk3), In(<v3, s3>)
+  , !WitnessPK(w4, pk4), In(<v4, s4>)
+  , !WitnessPK(w5, pk5), In(<v5, s5>)
+  ]
+  --[ Eq(verify(s1, v1, pk1), true), Eq(verify(s2, v2, pk2), true)
+    , Eq(verify(s3, v3, pk3), true), Eq(verify(s4, v4, pk4), true)
+    , Eq(verify(s5, v5, pk5), true), Neq(w1,w2), Neq(w1,w3)
+    , Neq(w1,w4), Neq(w1,w5), Neq(w2,w3), Neq(w2,w4)
+    , Neq(w2,w5), Neq(w3,w4), Neq(w3,w5), Neq(w4,w5)
+    , CertificateAccepted(w1,w2,w3,w4,w5,cp)
+    ]->
+  [ ]
+
+lemma accepted_certificate_has_five_distinct_signers:
+  "All w1 w2 w3 w4 w5 cp #i.
+     CertificateAccepted(w1,w2,w3,w4,w5,cp) @i
+     ==> not (w1 = w2) & not (w1 = w3) & not (w1 = w4) & not (w1 = w5)
+       & not (w2 = w3) & not (w2 = w4) & not (w2 = w5)
+       & not (w3 = w4) & not (w3 = w5) & not (w4 = w5)"
+
+lemma five_replays_cannot_form_certificate:
+  "not (Ex w cp #i. CertificateAccepted(w,w,w,w,w,cp))"
+
+end
