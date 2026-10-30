@@ -57,7 +57,7 @@ A separate ten-run series on the same fixture reported all checks passing each t
 
 ## Citation
 
-Please cite the archived software version using the metadata in `CITATION.cff`. A Zenodo DOI will be added after the repository is enabled in Zenodo and a versioned GitHub release is archived.
+The archived software release is available from Zenodo at https://doi.org/10.5281/zenodo.23792116. Please cite the archived version using the metadata in `CITATION.cff`. The GitHub repository is the development repository and may contain changes made after the archived version.
 
 ## License and use
 
