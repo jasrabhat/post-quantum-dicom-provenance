@@ -55,6 +55,10 @@ A separate ten-run series on the same fixture reported all checks passing each t
 - The historical run's recorded harness hash does not match the available release source; see `PROVENANCE.md`.
 - Dataset provenance and institutional ethics/permission details were not recorded in the available artifacts and must be confirmed before claims are made about them.
 
+## Citation
+
+Please cite the archived software version using the metadata in `CITATION.cff`. A Zenodo DOI will be added after the repository is enabled in Zenodo and a versioned GitHub release is archived.
+
 ## License and use
 
-No software license has been applied yet. Until the rights holder adds one, do not assume permission to reuse, modify, or redistribute the code. This prototype has not been independently security-audited or qualified for production use.
+The repository is released under the MIT License; see `LICENSE`. This prototype has not been independently security-audited or qualified for production use.
