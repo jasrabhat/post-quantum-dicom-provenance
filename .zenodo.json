@@ -21,12 +21,5 @@
     "provenance",
     "Merkle log",
     "witness quorum"
-  ],
-  "related_identifiers": [
-    {
-      "identifier": "https://github.com/jasrabhat/post-quantum-dicom-provenance",
-      "relation": "isSupplementTo",
-      "scheme": "url"
-    }
   ]
 }
