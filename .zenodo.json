@@ -1,0 +1,32 @@
+{
+  "title": "Post-Quantum, Byte-Preserving DICOM Exchange with Witness-Backed Provenance Verification",
+  "upload_type": "software",
+  "description": "Research prototype for byte-preserving DICOM exchange using ML-KEM-768, HKDF-SHA-256, AES-256-GCM, ML-DSA-65, a custom Merkle-style log, signed checkpoints, and witness-quorum checks. This release includes source code, selected regression tests, selected Tamarin models, and sanitized experimental summaries. It is an experimental research artifact, not a clinical or production system. The historical harness hash does not match the currently available source copy; see PROVENANCE.md for the reproducibility caveat. The custom Merkle log is not claimed to be fully RFC 9162 conformant. General signature-based duplicate-witness rejection remains unresolved.",
+  "creators": [
+    {
+      "name": "Bhat, Jasra"
+    }
+  ],
+  "version": "0.1.0",
+  "publication_date": "2026-10-30",
+  "access_right": "open",
+  "license": "mit",
+  "keywords": [
+    "DICOM",
+    "post-quantum cryptography",
+    "ML-KEM-768",
+    "ML-DSA-65",
+    "authenticated encryption",
+    "medical imaging",
+    "provenance",
+    "Merkle log",
+    "witness quorum"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/jasrabhat/post-quantum-dicom-provenance",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}
