@@ -1,12 +1,17 @@
 cff-version: 1.2.0
-message: "Cite the associated manuscript and repository version used. Update this citation when publication metadata are available."
+message: "If you use this software, please cite the archived software version and the associated manuscript when available."
 title: "Post-Quantum, Byte-Preserving DICOM Exchange with Witness-Backed Provenance Verification"
 version: 0.1.0
-date-released: 2026-10-28
+date-released: 2026-10-30
 type: software
+license: MIT
+authors:
+  - given-names: Jasra
+    family-names: Bhat
 keywords:
   - DICOM
   - post-quantum cryptography
   - provenance
   - Merkle log
   - witness quorum
+abstract: "Research prototype for byte-preserving DICOM exchange using ML-KEM-768, HKDF-SHA-256, AES-256-GCM, ML-DSA-65, a custom Merkle-style log, signed checkpoints, and witness-quorum checks. Includes selected regression tests, symbolic models, and sanitized experimental summaries. The prototype is not clinically validated or intended for production use."
